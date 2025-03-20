@@ -250,6 +250,9 @@
         .select2-container--default .select2-selection--multiple {
             flex-direction: column  ;
         }
+        .is-invalid{
+            border-color: #dc3545;
+        }
         
     </style>
 </head>
@@ -300,7 +303,7 @@
                             <div class="row align-items-end g-3">
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="dni">DNI</label>
-                                    <input name = "dni" type="text" class="form-control dni firstField" tabindex="1" size="9" required>
+                                    <input name = "dni" type="text" class="form-control dni firstField " tabindex="1" size="9" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="nombre">Nombre</label>
@@ -449,6 +452,7 @@
 
             // Función para guardar datos en localStorage
             function guardarEnLocalStorage() {
+                let isRequiredComplited =true;
                 const filas = [];
                 $('.row-template').each(function (index) {
                     const fila = {
@@ -464,11 +468,18 @@
                         tarjeta: $(this).find('.tarjeta').is(':checked'),
                         id: $(this).attr('id') // Asignar un ID único a cada fila
                     };
-                    validationRowData(fila);
+                    isRequiredComplited = validationRowData(fila);
+                    if(isRequiredComplited === false){
+                        return false;
+                    }
+                    
                     filas.push(fila);
                 });
-
-                localStorage.setItem('formularioSolicitudes', JSON.stringify(filas));
+                if(isRequiredComplited === true){
+                    localStorage.setItem('formularioSolicitudes', JSON.stringify(filas));
+                }   
+                return isRequiredComplited;
+                
             }
 
             // Función para cargar datos desde localStorage
@@ -573,8 +584,10 @@
             // Función para clonar fila
             function clonarFila() {
                 // Guardar datos actuales
-                guardarEnLocalStorage();
-
+                const isRequiredComplited = guardarEnLocalStorage();
+                if(isRequiredComplited === false){
+                    return false;
+                }
                 // Clonar fila
                 const newRow = clonarFilaSinFocus();
                 // establecemos valores por defecto
