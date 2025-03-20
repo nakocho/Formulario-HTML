@@ -276,6 +276,13 @@
             <div class="col-md-1 form-col">Final</div>
             <div class="col-md-1 form-col">Horario</div>
             <div class="col-md-1 form-col">Tarjeta</div>
+
+            estado required
+            dni required
+            nombre required
+            apellidos required
+            email required
+
         </div>-->
 
             <!-- Filas dinámicas -->
@@ -293,28 +300,28 @@
                             <div class="row align-items-end g-3">
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="dni">DNI</label>
-                                    <input type="text" class="form-control dni firstField" tabindex="1" size="9" required>
+                                    <input name = "dni" type="text" class="form-control dni firstField" tabindex="1" size="9" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="nombre">Nombre</label>
-                                    <input type="text" class="form-control nombre" tabindex="2" size="20">
+                                    <input name = "nombre" type="text" class="form-control nombre" tabindex="2" size="20" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="apellidos">Apellidos</label>
-                                    <input type="text" class="form-control apellidos" tabindex="3" size="20">
+                                    <input name = "apellidos" type="text" class="form-control apellidos" tabindex="3" size="20" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="email">Email</label>
-                                    <input type="email" class="form-control email" tabindex="4" size="20">
+                                    <input name = "email" type="email" class="form-control email" tabindex="4" size="20" required>
                                 </div>
                                 <div class="col-12 col-md">
                                     <label for="tipo-solicitud">Tipo</label>
-                                    <select class="form-select tipo-solicitud" tabindex="5"></select>
+                                    <select name = "tipoSolicitud" class="form-select tipo-solicitud" tabindex="5"></select>
                                 </div>
                                 <div class="col-12 col-sm-auto ms-md-auto">
                                     <label for="tarjeta" class="d-inline-block label-inline">Tarjeta</label>
                                     <div class="form-check form-switch d-flex justify-content-center">
-                                        <input class="form-check-input tarjeta" type="checkbox" role="switch" id="tarjetaSwitch" tabindex="6">
+                                        <input name = "tarjeta" class="form-check-input tarjeta" type="checkbox" role="switch" id="tarjetaSwitch" tabindex="6">
                                         <label class="form-check-label ms-2" for="tarjetaSwitch">No</label>
                                     </div>
                                 </div>
@@ -322,20 +329,20 @@
                             <div class="row g-3 mt-2">
                                 <div class="col-12 col-md">
                                     <label for="rutas">Rutas</label>
-                                    <select class="form-select rutas" multiple tabindex="7"></select>
+                                    <select name = "rutas" class="form-select rutas" multiple tabindex="7"></select>
                                 </div>
                                 <div class="col-12 col-md">
                                     <label for="horario">Horario</label>
-                                    <select class="form-select horario" multiple tabindex="8"></select>
+                                    <select name = "horario" class="form-select horario" multiple tabindex="8"></select>
                                 </div>
                                
                                 <div class="col-12 col-md">
                                     <label for="fecha-inicio">Inicio</label>
-                                    <input type="datetime-local" class="form-control fecha-inicio" tabindex="9">
+                                    <input name = "fecha-inicio" type="datetime-local" class="form-control fecha-inicio" tabindex="9" required>
                                 </div>
                                 <div class="col-12 col-md">
                                     <label for="fecha-final">Final</label>
-                                    <input type="datetime-local" class="form-control fecha-final lastField" tabindex="10">
+                                    <input name = "fecha-final" type="datetime-local" class="form-control fecha-final lastField" tabindex="10" required>
                                 </div>
                               
                             </div>

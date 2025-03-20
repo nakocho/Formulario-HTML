@@ -3,9 +3,34 @@
 function validationRowData(row){
     console.log('------- inicio de validación de datos de fila -------');
     console.log(row);
-    
+
+    const fieldsRequired = getRequiredFields(row);
+    let a = fieldsRequired.get("dni")
+    console.log("a",a);
+    console.log("ojo",fieldsRequired);
     console.log('-----------------------------------------------------');
     
+}
+
+function getRequiredFields(row) {
+    const elementHtml = getElementHtml(row);
+    if (!elementHtml) return;
+    const requiredFields = $(elementHtml).find('[required]');
+    if (requiredFields.length > 0) {
+        return requiredFields.map((index, field) => {
+            const fieldName = $(field).attr('name');
+            const fieldValue = $(field).val();
+            return { fieldName, fieldValue };
+        }).get();
+    }
+}
+
+function getElementHtml(row){
+    const idRow = $(row).attr("id");
+    if (!idRow) return;
+    const elementHtml = $(`#${idRow}`).html();
+    return elementHtml;
+
 }
 
 function registroActive(element){
