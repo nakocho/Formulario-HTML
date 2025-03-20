@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Solicitudes</title>
+
+    <script>
+        const jsonData = {
+            "tipos_solicitud": ["Renovación", "Permanente", "Temporal"],
+            "horarios2": {
+                "results": [
+                    {
+                        "text": "Ruta 1",
+                        "children": [
+                            {
+                                "id": 1,
+                                "text": "Mañana"
+                            },
+                            {
+                                "id": 2,
+                                "text": "Tarde"
+                            }
+                        ]
+                    },
+                    {
+                        "text": "Ruta 2",
+                        "children": [
+                            {
+                                "id": 3,
+                                "text": "Tarde"
+                            },
+                            {
+                                "id": 4,
+                                "text": "24h"
+                            }
+                        ]
+                    }
+                ],
+                "pagination": {
+                    "more": true
+                }
+            },
+            "rutas": ["Ruta 1", "Ruta 2", "Ruta 3", "Ruta 4", "Ruta 5", "Ruta 6", "Ruta 7", "Ruta 8", "Ruta 9"]
+        };
+
+
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        .header {
+            background-color: #e3f2fd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -5px;
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .form-row:last-child {
+            border-bottom: none;
+        }
+
+        .form-col {
+            padding: 0 5px;
+        }
+
+        .table-header {
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .multiselect-native-select {
+            width: 100%;
+        }
+
+        label {
+            &:not(.label-inline) {
+                display: block;
+            }
+            margin-bottom: 5px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        .dni.form-control {
+            width: unset;
+        }
+    
+        .select2-container--default .select2-selection--single,
+        .select2-container--default .select2-selection--multiple {
+            min-height: 38px;
+            border: 1px solid #dee2e6;
+            padding: 0 0.75rem;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            max-height: 74px;
+            overflow-y: auto;
+        }
+        .select2-container {
+            /* Removing overflow: hidden which might be hiding dropdown options */
+            overflow: visible;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            gap: 4px !important;
+            padding: 0 0.75rem !important;
+            margin: 0 !important;
+            min-height: 36px !important;
+            line-height: 1 !important;
+            width: 100% !important;
+        }
+
+        /* Nuevas reglas para controlar el orden */
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            order: 2 !important;
+            padding: 0 1rem 0 2rem !important;
+            margin: 2px !important;
+            height: 32px !important;
+            display: flex !important;
+            align-items: center !important;
+            position: relative !important;
+            background-color: #e9ecef !important;
+            border: 1px solid #dee2e6 !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            position: absolute !important;
+            left: 0.5rem !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            margin: 0 !important;
+            border-right: 1px solid #dee2e6 !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            padding: 0 0.5rem !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-search--inline {
+            order: 1 !important;
+            margin-right: auto !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-search__field {
+            width: 100% !important;
+            margin: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered:empty {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered .select2-search {
+            margin: 0 !important;
+            height: 36px !important;
+            display: flex !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-search__field::placeholder {
+            text-align: left !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px;
+            padding-left: 0;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container .select2-selection--multiple {
+            min-height: 38px !important;
+            height: auto !important;
+        }
+
+        .select2-container--default .select2-selection--multiple ul {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Ajustar el padding del dropdown */
+        .select2-container--default .select2-results > .select2-results__options {
+            padding: 0.375rem 0;
+        }
+
+        .select2-container--default .select2-results__option {
+            padding: 0.375rem 0.75rem;
+        }
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered:empty {
+            display: none !important;
+        }
+
+        /* Ajustar el padding de los campos de búsqueda de Select2 */
+        .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+            padding: 0.375rem 0.75rem !important;
+            margin-top: 0 !important;
+            height: 36px !important;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            padding: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            padding: 0 !important;
+        }
+
+        /* Ajustar la flecha del select simple */
+        .select2-container--default .select2-selection--single {
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 100% !important;
+            top: 0 !important;
+        }
+        /*.select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+         display: none;
+        }*/
+        .select2-container--default .select2-selection--multiple {
+            flex-direction: column  ;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <header class="header">
+<div class="container">        
+        <h1 class="mb-0">Solicitudes de acceso</h1>
+</div>
+    </header>
+    <main>
+        <div class="container">
+
+
+            <!-- Encabezados -->
+            <!--<div class="row table-header gx-2">
+            <div class="col-md-1 form-col">DNI</div>
+            <div class="col-md-1 form-col">Nombre</div>
+            <div class="col-md-2 form-col">Apellidos</div>
+            <div class="col-md-2 form-col">Email</div>
+            <div class="col-md-1 form-col">Rutas</div>
+            <div class="col-md-1 form-col">Tipo</div>
+            <div class="col-md-1 form-col">Inicio</div>
+            <div class="col-md-1 form-col">Final</div>
+            <div class="col-md-1 form-col">Horario</div>
+            <div class="col-md-1 form-col">Tarjeta</div>
+        </div>-->
+
+            <!-- Filas dinámicas -->
+            <div id="formBody">
+                <div id = "idRegistroRow_1" class="row-template mb-3">
+                    <div class="card" id="idRegistro_1">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Solicitud #<span class="numero-solicitud">1</span></h5>
+                            <button type="button" class="btn btn-outline-danger btn-sm eliminar-solicitud" style="display: none;">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            
+                            <div class="row align-items-end g-3">
+                                <div class="col-12 col-sm-6 col-md-auto">
+                                    <label for="dni">DNI</label>
+                                    <input type="text" class="form-control dni" tabindex="1" size="9" required>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-auto">
+                                    <label for="nombre">Nombre</label>
+                                    <input type="text" class="form-control nombre" tabindex="2" size="20">
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-auto">
+                                    <label for="apellidos">Apellidos</label>
+                                    <input type="text" class="form-control apellidos" tabindex="3" size="20">
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-auto">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control email" tabindex="4" size="20">
+                                </div>
+                                <div class="col-12 col-md">
+                                    <label for="tipo-solicitud">Tipo</label>
+                                    <select class="form-select tipo-solicitud" tabindex="5"></select>
+                                </div>
+                                <div class="col-12 col-sm-auto ms-md-auto">
+                                    <label for="tarjeta" class="d-inline-block label-inline">Tarjeta</label>
+                                    <div class="form-check form-switch d-flex justify-content-center">
+                                        <input class="form-check-input tarjeta" type="checkbox" role="switch" id="tarjetaSwitch" tabindex="6">
+                                        <label class="form-check-label ms-2" for="tarjetaSwitch">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3 mt-2">
+                                <div class="col-12 col-md">
+                                    <label for="rutas">Rutas</label>
+                                    <select class="form-select rutas" multiple tabindex="7"></select>
+                                </div>
+                                <div class="col-12 col-md">
+                                    <label for="horario">Horario</label>
+                                    <select class="form-select horario" multiple tabindex="8"></select>
+                                </div>
+                               
+                                <div class="col-12 col-md">
+                                    <label for="fecha-inicio">Inicio</label>
+                                    <input type="datetime-local" class="form-control fecha-inicio" tabindex="9">
+                                </div>
+                                <div class="col-12 col-md">
+                                    <label for="fecha-final">Final</label>
+                                    <input type="datetime-local" class="form-control fecha-final lastField" tabindex="10" >
+                                </div>
+                              
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mt-4">
+                <button class="btn btn-primary" id="nuevaSolicitud">
+                    <i class="bi bi-plus-circle"></i> Nueva Solicitud
+                </button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success" id="generarCSV">Generar CSV</button>
+                    <button class="btn btn-danger" id="limpiarFormulario">Limpiar Formulario</button>
+                    <button onclick=saludosTerrricolas() class="btn btn-danger" id="saludo">Saludo</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="./funciones.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // Inicializar datos de tipos de solicitud
+            $('.tipo-solicitud').html(jsonData.tipos_solicitud.map(t => `<option>${t}</option>`));
+
+            // Cargar opciones de rutas en los selectores
+            $('.rutas').html(jsonData.rutas.map(r => `<option value="${r}">${r}</option>`));
+
+            // Función unificada para inicializar Select2
+            function initSelect2(element, tipo) {
+                // Configuración común para todos los selectores
+                const config = {
+                    width: 'resolve',
+                    dropdownParent: $(element).closest('.card-body'),
+                    templateResult: function(data) {
+                        if (data.loading) return data.text;
+                        return $('<span>' + data.text + '</span>');
+                    },
+                    templateSelection: function(data) {
+                        if (!data.id) return $('<span style="margin-right: auto;">' + data.text + '</span>');
+                        return $('<span>' + data.text + '</span>');
+                    }
+                };
+                
+                // Configuración específica según el tipo
+                if (tipo === 'rutas') {
+                    config.placeholder = "Seleccione rutas";
+                    config.multiple = true;
+                    config.closeOnSelect = false;
+                    
+                    // Asegurarse de que las opciones estén cargadas antes de inicializar
+                    if ($(element).find('option').length === 0) {
+                        $(element).html(jsonData.rutas.map(r => `<option value="${r}">${r}</option>`));
+                    }
+                    
+                    $(element).select2(config);
+                } else if (tipo === 'horario') {
+                    config.placeholder = "Seleccione horarios";
+                    config.multiple = true;
+                    config.closeOnSelect = false;
+                    config.data = jsonData.horarios2.results;
+                    
+                    $(element).select2(config);
+                } else if (tipo === 'tipo-solicitud') {
+                    config.placeholder = "Seleccione tipo";
+                    config.minimumResultsForSearch = Infinity;
+                    config.closeOnSelect = true;
+                    
+                    // Asegurarse de que las opciones estén cargadas antes de inicializar
+                    if ($(element).find('option').length === 0) {
+                        $(element).html(jsonData.tipos_solicitud.map(t => `<option>${t}</option>`));
+                    }
+                    
+                    $(element).select2(config);
+                }
+            }
+
+            // Cargar datos en todos los selectores
+            function loadSelectData() {
+                // Cargar datos de rutas
+                $('.rutas').each(function () {
+                    if (!$(this).hasClass('select2-hidden-accessible')) {
+                        $(this).html(jsonData.rutas.map(r => `<option value="${r}">${r}</option>`));
+                    }
+                });
+
+                // Cargar datos de tipos de solicitud
+                $('.tipo-solicitud').each(function () {
+                    if (!$(this).hasClass('select2-hidden-accessible')) {
+                        $(this).html(jsonData.tipos_solicitud.map(t => `<option>${t}</option>`));
+                    }
+                });
+            }
+
+            // Función para guardar datos en localStorage
+            function guardarEnLocalStorage() {
+                const filas = [];
+                $('.row-template').each(function (index) {
+                    const fila = {
+                        dni: $(this).find('.dni').val(),
+                        nombre: $(this).find('.nombre').val(),
+                        apellidos: $(this).find('.apellidos').val(),
+                        email: $(this).find('.email').val(),
+                        rutas: $(this).find('.rutas').val(),
+                        tipoSolicitud: $(this).find('.tipo-solicitud').val(),
+                        fechaInicio: $(this).find('.fecha-inicio').val(),
+                        fechaFinal: $(this).find('.fecha-final').val(),
+                        horario: Array.from($(this).find('.horario').select2('data')).map(item => item.id),
+                        tarjeta: $(this).find('.tarjeta').is(':checked'),
+                        id: $(this).attr('id') // Asignar un ID único a cada fila
+                    };
+                    validationRowData(fila);
+                    filas.push(fila);
+                });
+
+                localStorage.setItem('formularioSolicitudes', JSON.stringify(filas));
+            }
+
+            // Función para cargar datos desde localStorage
+            function cargarDesdeLocalStorage() {
+                const datos = localStorage.getItem('formularioSolicitudes');
+                if (datos) {
+                    const filas = JSON.parse(datos);
+
+                    // Eliminar todas las filas excepto la primera
+                    $('.row-template:not(:first)').remove();
+
+                    // Limpiar la primera fila
+                    const primeraFila = $('.row-template:first');
+                    primeraFila.find('input').val('');
+                    primeraFila.find('select').val(null).trigger('change');
+                    primeraFila.find('.tarjeta').prop('checked', false);
+
+                    // Cargar los datos
+                    filas.forEach((fila, index) => {
+                        if (index === 0) {
+                            // Cargar datos en la primera fila
+                            cargarDatosEnFila(primeraFila, fila);
+                        } else {
+                            // Crear nuevas filas para el resto de datos
+                            const nuevaFila = clonarFilaSinFocus();
+                            cargarDatosEnFila(nuevaFila, fila);
+                        }
+                    });
+                }
+            }
+
+            // Función para cargar datos en una fila específica
+            function cargarDatosEnFila(fila, datos) {
+                fila.find('.dni').val(datos.dni);
+                fila.find('.nombre').val(datos.nombre);
+                fila.find('.apellidos').val(datos.apellidos);
+                fila.find('.email').val(datos.email);
+                fila.find('.rutas').val(datos.rutas).trigger('change');
+                fila.find('.tipo-solicitud').val(datos.tipoSolicitud).trigger('change');
+                fila.find('.fecha-inicio').val(datos.fechaInicio);
+                fila.find('.fecha-final').val(datos.fechaFinal);
+
+                // Cargar horarios (más complejo por ser jerárquico)
+                if (datos.horario && datos.horario.length) {
+                    setTimeout(() => {
+                        fila.find('.horario').val(datos.horario).trigger('change');
+                    }, 100);
+                }
+
+                fila.find('.tarjeta').prop('checked', datos.tarjeta);
+            }
+
+            // Función para clonar fila sin enfocar
+            function clonarFilaSinFocus() {
+                const originalRow = $('.row-template:last');
+                const newRow = originalRow.clone(false);
+                // Actualizar número de solicitud
+                const numSolicitud = $('.row-template').length + 1;
+                newRow.attr("id", `idRegistroRow_${numSolicitud}`);
+                newRow.find('.card').attr("id", `idRegistro_${numSolicitud}`);
+                newRow.find('.numero-solicitud').text(numSolicitud);
+                
+                // Mostrar el botón de eliminar en todas las solicitudes excepto la primera
+                $('.row-template .eliminar-solicitud').show();
+                
+                // Limpiar completamente los Select2
+                newRow.find('.rutas, .horario, .tipo-solicitud')
+                    .removeClass('select2-hidden-accessible')
+                    .removeAttr('data-select2-id')
+                    .next('.select2-container').remove();
+                
+                // Limpiar atributos data-select2-id de todos los elementos dentro de la fila
+                newRow.find('*').each(function() {
+                    $(this).removeAttr('data-select2-id');
+                });
+                
+                // Limpiar valores de los inputs
+                newRow.find('input').val('');
+                newRow.find('.form-check-label').text('No');
+                
+                // Actualizar tabindex de forma única
+                let maxTabIndex = Math.max(...$('[tabindex]').map((i, el) => parseInt($(el).attr('tabindex'))).get());
+                newRow.find('[tabindex]').each(function() {
+                    $(this).attr('tabindex', maxTabIndex + 1);
+                    maxTabIndex++;
+                });
+                
+                // Insertar la nueva fila
+                $('#formBody').append(newRow);
+                
+                // Inicializar Select2 y otros componentes
+                loadSelectData();
+                initSelect2(newRow.find('.rutas')[0], 'rutas');
+                initSelect2(newRow.find('.horario')[0], 'horario');
+                initSelect2(newRow.find('.tipo-solicitud')[0], 'tipo-solicitud');
+                
+                return newRow;
+            }
+
+            // Función para clonar fila
+            function clonarFila() {
+                // Guardar datos actuales
+                guardarEnLocalStorage();
+
+                // Clonar fila
+                const newRow = clonarFilaSinFocus();
+
+                // Enfocar primer campo
+                newRow.find('.dni').trigger('focus');
+            }
+
+            // Función para limpiar el formulario
+            function limpiarFormulario() {
+                // Eliminar todas las filas excepto la primera
+                $('.row-template:not(:first)').remove();
+                
+                // Limpiar la primera fila
+                const primeraFila = $('.row-template:first');
+                primeraFila.find('input').val('');
+                primeraFila.find('select').val(null).trigger('change');
+                primeraFila.find('.tarjeta').prop('checked', false);
+                primeraFila.find('.form-check-label').text('No');
+                
+                // Ocultar el botón de eliminar en la primera fila
+                primeraFila.find('.eliminar-solicitud').hide();
+                
+                // Resetear el número de solicitud
+                primeraFila.find('.numero-solicitud').text('1');
+                
+                // Limpiar localStorage
+                localStorage.removeItem('formularioSolicitudes');
+                
+                // Enfocar el primer campo
+                primeraFila.find('.dni').trigger('focus');
+            }
+
+            // Inicialización inicial de los Select2
+            loadSelectData();
+            
+            // Asegurarse de que los selectores estén inicializados correctamente
+            $('.rutas').each(function () {
+                // Reiniciar cualquier instancia previa de Select2
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+                initSelect2(this, 'rutas');
+            });
+            
+            $('.horario').each(function () {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+                initSelect2(this, 'horario');
+            });
+            
+            $('.tipo-solicitud').each(function () {
+                if ($(this).hasClass('select2-hidden-accessible')) {
+                    $(this).select2('destroy');
+                }
+                initSelect2(this, 'tipo-solicitud');
+            });
+            
+            // Forzar la actualización de los selectores después de la inicialización
+            setTimeout(function() {
+                $('.rutas, .horario, .tipo-solicitud').trigger('change');
+            }, 100);
+
+            // Cargar datos guardados al iniciar
+            cargarDesdeLocalStorage();
+
+            // Cambiar el detector de tab a fecha-final 
+            // comentado añadido como clase lastField --> ignacio
+            // $(document).on('keydown', '.fecha-final', function(e) {
+            //     if(e.key === 'Tab' && !e.shiftKey) {
+            //         clonarFila();
+            //     }
+            // });
+            /////////////////////////////////////////////////////////
+
+            // Detector de Enter para guardar
+            $(document).on('keydown', 'input, select', function (e) {
+                if (e.key === 'Enter') {
+                    guardarEnLocalStorage();
+                }
+            });
+
+            // Botón para limpiar formulario
+            $('#limpiarFormulario').click(function () {
+                limpiarFormulario();
+            });
+
+            // Generar CSV con los datos del formulario
+            $('#generarCSV').click(function () {
+                let csvContent = "data:text/csv;charset=utf-8,";
+                $('.row-template').each(function () {
+                    const row = [
+                        $(this).find('.dni').val(),
+                        $(this).find('.nombre').val(),
+                        $(this).find('.apellidos').val(),
+                        $(this).find('.email').val(),
+                        $(this).find('.tipo-solicitud').val(),
+                        $(this).find('.fecha-inicio').val(),
+                        $(this).find('.fecha-final').val(),
+                        Array.from($(this).find('.horario').select2('data')).map(item => item.text).join(';'),
+                        $(this).find('.tarjeta').is(':checked') ? 'Sí' : 'No',
+                        $(this).find('.rutas').val().join(';')
+                    ].map(field => `"${field}"`).join(',');
+
+                    csvContent += row + "\r\n";
+                });
+
+                // Crear y descargar el archivo CSV
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "solicitudes.csv");
+                document.body.appendChild(link);
+                link.click();
+
+                // Limpiar formulario después de generar CSV
+                limpiarFormulario();
+            });
+            $('.tarjeta').change(function () {
+                $(this).next('label').text($(this).is(':checked') ? 'Sí' : 'No');
+            });
+
+            // Botón para nueva solicitud
+            $('#nuevaSolicitud').click(function() {
+                clonarFila();
+            });
+
+            // Añadir función para eliminar solicitud
+            $(document).on('click', '.eliminar-solicitud', function() {
+                if($('.row-template').length > 1) {
+                    $(this).closest('.row-template').remove();
+                    
+                    // Actualizar números de solicitud
+                    $('.row-template').each(function(index) {
+                        $(this).attr("id", `idRegistroRow_${index + 1}`);
+                        $(this).find('.numero-solicitud').text(index + 1);
+                        $('.card').attr("id", `idRegistro_${index + 1}`);
+                    });
+                    
+                    // Ocultar el botón de eliminar si solo queda una solicitud
+                    if($('.row-template').length === 1) {
+                        $('.eliminar-solicitud').hide();
+                        $(this).attr("id", `idRegistroRow_1`);
+                    }
+                }
+            });
+        
+
+
+
+            
+        $(document).on('keydown', '.lastField', function(e) {
+            if ((e.key === 'Tab' && !e.shiftKey)|| e.key === 'Enter') {
+                // validationRowData(this);
+                clonarFila();
+            }
+        });    
+    });
+
+
+
+    </script>
+</body>
+
+</html>
