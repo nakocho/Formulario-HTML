@@ -293,7 +293,7 @@
                             <div class="row align-items-end g-3">
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="dni">DNI</label>
-                                    <input type="text" class="form-control dni" tabindex="1" size="9" required>
+                                    <input type="text" class="form-control dni firstField" tabindex="1" size="9" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="nombre">Nombre</label>
@@ -335,7 +335,7 @@
                                 </div>
                                 <div class="col-12 col-md">
                                     <label for="fecha-final">Final</label>
-                                    <input type="datetime-local" class="form-control fecha-final lastField" tabindex="10" >
+                                    <input type="datetime-local" class="form-control fecha-final lastField" tabindex="10">
                                 </div>
                               
                             </div>
@@ -367,13 +367,13 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
-
+            
             // Inicializar datos de tipos de solicitud
             $('.tipo-solicitud').html(jsonData.tipos_solicitud.map(t => `<option>${t}</option>`));
 
             // Cargar opciones de rutas en los selectores
             $('.rutas').html(jsonData.rutas.map(r => `<option value="${r}">${r}</option>`));
-
+           
             // Función unificada para inicializar Select2
             function initSelect2(element, tipo) {
                 // Configuración común para todos los selectores
@@ -490,6 +490,8 @@
                             cargarDatosEnFila(nuevaFila, fila);
                         }
                     });
+                }else{
+                    setDefaultFirstRowData();
                 }
             }
 
@@ -551,7 +553,7 @@
                 
                 // Insertar la nueva fila
                 $('#formBody').append(newRow);
-                
+
                 // Inicializar Select2 y otros componentes
                 loadSelectData();
                 initSelect2(newRow.find('.rutas')[0], 'rutas');
@@ -568,9 +570,8 @@
 
                 // Clonar fila
                 const newRow = clonarFilaSinFocus();
-
-                // Enfocar primer campo
-                newRow.find('.dni').trigger('focus');
+                // establecemos valores por defecto
+                setDefaultRowData(newRow);
             }
 
             // Función para limpiar el formulario
@@ -593,9 +594,7 @@
                 
                 // Limpiar localStorage
                 localStorage.removeItem('formularioSolicitudes');
-                
-                // Enfocar el primer campo
-                primeraFila.find('.dni').trigger('focus');
+                setDefaultFirstRowData();
             }
 
             // Inicialización inicial de los Select2
@@ -712,14 +711,10 @@
                     }
                 }
             });
-        
 
-
-
-            
+        // Añadir función para clonar fila tras pulsar Enter o Tab en el último campo (clase lastField)
         $(document).on('keydown', '.lastField', function(e) {
             if ((e.key === 'Tab' && !e.shiftKey)|| e.key === 'Enter') {
-                // validationRowData(this);
                 clonarFila();
             }
         });    
