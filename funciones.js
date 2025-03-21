@@ -1,8 +1,6 @@
 
 
 function validationRowData(row){
-    console.log('------- inicio de validación de datos de fila -------');
-    console.log(row);
     const isRequiredComplited =  validationRequiredFields(row);
     const isPatternValid = validationPaternFields(row);
     if (isRequiredComplited && isPatternValid) {
@@ -86,10 +84,10 @@ function registroActive(element){
 
 function defaultRowData(){
     return {
-        // dni: "22",
-        // nombre: 'J.Philips',
-        // apellidos: 'Fray',
-        // email: 'lover@flower.com',
+        dni: "12345678Z",
+        nombre: 'J.Philips',
+        apellidos: 'Fry',
+        email: 'ILoveLila@PlanetExpress.com',
         'fecha-inicio': setDateTodayData(),
         'fecha-final': setDateTodayData(),
     }

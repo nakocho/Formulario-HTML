@@ -300,7 +300,7 @@
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="nombre">Nombre</label>
-                                    <input name = "nombre" type="text" class="form-control nombre no-validation" tabindex="2" size="20" pattern="[A-Za-z0-9 ]{3,16}" required>
+                                    <input name = "nombre" type="text" class="form-control nombre no-validation" tabindex="2" size="20" pattern="[A-Za-z0-9 .]{3,16}" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="apellidos">Apellidos</label>
@@ -317,8 +317,8 @@
                                 <div class="col-12 col-sm-auto ms-md-auto">
                                     <label for="tarjeta" class="d-inline-block label-inline">Tarjeta</label>
                                     <div class="form-check form-switch d-flex justify-content-center">
-                                        <input name = "tarjeta" class="form-check-input tarjeta" type="checkbox" role="switch" id="tarjetaSwitch" tabindex="6">
-                                        <label class="form-check-label ms-2" for="tarjetaSwitch">No</label>
+                                        <input name = "tarjeta" class="form-check-input tarjeta robin" type="checkbox" role="switch" id="tarjetaSwitch_1" tabindex="6">
+                                        <label class="form-check-label ms-2" for="tarjetaSwitch_1">No</label>
                                     </div>
                                 </div>
                             </div>
@@ -444,7 +444,7 @@
 
             // Función para guardar datos en localStorage
             function guardarEnLocalStorage() {
-                let isRequiredComplited =true;
+                let isvalidationOK =true;
                 const filas = [];
                 $('.row-template').each(function (index) {
                     const fila = {
@@ -460,17 +460,17 @@
                         tarjeta: $(this).find('.tarjeta').is(':checked'),
                         id: $(this).attr('id') // Asignar un ID único a cada fila
                     };
-                    isRequiredComplited = validationRowData(fila);
-                    if(isRequiredComplited === false){
+                    isvalidationOK = validationRowData(fila);
+                    if(isvalidationOK === false){
                         return false;
                     }
                     
                     filas.push(fila);
                 });
-                if(isRequiredComplited === true){
+                if(isvalidationOK === true){
                     localStorage.setItem('formularioSolicitudes', JSON.stringify(filas));
                 }   
-                return isRequiredComplited;
+                return isvalidationOK;
                 
             }
 
@@ -535,6 +535,9 @@
                 newRow.attr("id", `idRegistroRow_${numSolicitud}`);
                 newRow.find('.card').attr("id", `idRegistro_${numSolicitud}`);
                 newRow.find('.numero-solicitud').text(numSolicitud);
+                newRow.find('.tarjeta').attr("id", `tarjetaSwitch_${numSolicitud}`);
+                newRow.find('.form-check-label').attr("for", `tarjetaSwitch_${numSolicitud}`);
+                
                 
                 // Mostrar el botón de eliminar en todas las solicitudes excepto la primera
                 $('.row-template .eliminar-solicitud').show();
@@ -553,6 +556,7 @@
                 // Limpiar valores de los inputs
                 newRow.find('input').val('');
                 newRow.find('.form-check-label').text('No');
+                
                 
                 // Actualizar tabindex de forma única
                 let maxTabIndex = Math.max(...$('[tabindex]').map((i, el) => parseInt($(el).attr('tabindex'))).get());
@@ -576,8 +580,8 @@
             // Función para clonar fila
             function clonarFila() {
                 // Guardar datos actuales
-                const isRequiredComplited = guardarEnLocalStorage();
-                if(isRequiredComplited === false){
+                const isvalidationOK = guardarEnLocalStorage();
+                if(isvalidationOK === false){
                     return false;
                 }
                 // Clonar fila
@@ -658,6 +662,7 @@
             // Generar CSV con los datos del formulario
             $('#generarCSV').click(function () {
                 let csvContent = "data:text/csv;charset=utf-8,";
+                //TODO let isvalidationOK = true;
                 $('.row-template').each(function () {
                     const row = [
                         $(this).find('.dni').val(),
@@ -671,6 +676,11 @@
                         $(this).find('.tarjeta').is(':checked') ? 'Sí' : 'No',
                         $(this).find('.rutas').val().join(';')
                     ].map(field => `"${field}"`).join(',');
+                    //TODO // isvalidationOK = validationRowData(row);
+                    // if(isvalidationOK === false){
+                        
+                    //     return false;
+                    // }
 
                     csvContent += row + "\r\n";
                 });
@@ -686,9 +696,12 @@
                 // Limpiar formulario después de generar CSV
                 limpiarFormulario();
             });
-            $('.tarjeta').change(function () {
+
+            // evento al cambiar el valor de la tarjeta
+            $(document).on('change', '.tarjeta', function () {
                 $(this).next('label').text($(this).is(':checked') ? 'Sí' : 'No');
             });
+
 
             // Botón para nueva solicitud
             $('#nuevaSolicitud').click(function() {
@@ -705,6 +718,8 @@
                         $(this).attr("id", `idRegistroRow_${index + 1}`);
                         $(this).find('.numero-solicitud').text(index + 1);
                         $('.card').attr("id", `idRegistro_${index + 1}`);
+                        $(this).find('.tarjeta').attr("id", `tarjetaSwitch_${index + 1}`);
+                        $(this).find('.form-check-label').attr("for", `tarjetaSwitch_${index + 1}`);
                     });
                     
                     // Ocultar el botón de eliminar si solo queda una solicitud
