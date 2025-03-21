@@ -3,23 +3,31 @@
 function validationRowData(row){
     console.log('------- inicio de validación de datos de fila -------');
     console.log(row);
-    const fieldsRequired = getRequiredFields(row);
-    if (!fieldsRequired) {
-        console.log('No se encontraron campos requeridos en la fila proporcionada.');
-        return;
+    const isRequiredComplited =  validationRequiredFields(row);
+    const isPatternValid = validationPaternFields(row);
+    if (isRequiredComplited && isPatternValid) {
+        console.log('Los datos de la fila son válidos.');
+        return true;
     }
-    const isRequiredComplited =  validationRequiredFields(row, fieldsRequired);
-    return isRequiredComplited;
+    else{
+        console.log('Los datos de la fila no son válidos.');
+        return false;
+    }
 }
 
-function validationRequiredFields(row, fieldsRequired){
+function validationRequiredFields(row){
+    const fieldsRequired = getRequiredFields(row);
     const elementHtml = getElementHtml(row);
+
+    //limpiar clase input.no-validation:invalid
+    $(elementHtml).find('input.no-validation').removeClass("no-validation");
     let requiredComplited = fieldsRequired.every((field) => field.fieldValue);
     if (requiredComplited) {
         console.log('Todos los campos requeridos están completos.');
         $(elementHtml).find('[required]').removeClass("is-invalid");
         return true;
     }
+
     console.log('Faltan campos requeridos por completar.');
     $(elementHtml).find('[required]').removeClass("is-invalid");
 
@@ -36,6 +44,18 @@ function validationRequiredFields(row, fieldsRequired){
     });
     return requiredComplited;
 }
+
+function validationPaternFields(row){
+    const elementHtml = getElementHtml(row);
+    const elementosConPatternInvalidos = $(elementHtml).find('input[pattern]:invalid');
+    if (elementosConPatternInvalidos.length > 0) {
+        elementosConPatternInvalidos.addClass("is-invalid");
+        console.log('Hay campos con patrones inválidos.');
+        return false;
+    }
+    return true;
+}
+
 
 function getRequiredFields(row) {
     const elementHtml = getElementHtml(row);
@@ -106,3 +126,11 @@ function setFocusFirstField(row){
 
 
 
+/*
+expresion regular para validar dni en españa ^\d{8}(-?[A-Za-z])?$" acepta 8 digitos seguidos de un guion opcional y una letra mayuscula o minuscula al final
+
+TODO : 
+    - controlar si hay que validar algún tipo de documento de identidad diferente a DNI
+    - añadir al clonar los estilos no-validation para los campos que tengan required o pattern para que no salgan de primeras con estilos rojos de errror
+    - controlar que los select tienen selected el valor por defecto
+*/

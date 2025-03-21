@@ -250,8 +250,23 @@
         .select2-container--default .select2-selection--multiple {
             flex-direction: column  ;
         }
-        .is-invalid{
+        /* .is-invalid{
             border-color: #dc3545;
+        } */
+
+        label {
+        display: block;
+        margin-top: 1em;
+        }
+
+        input:invalid {
+        background-color: rgb(240, 227, 229);
+        border-color: #dc3545;
+        }
+
+        input.no-validation:invalid {
+            background-color: unset;
+            border: 1px solid #dee2e6;
         }
         
     </style>
@@ -267,27 +282,6 @@
         <div class="container">
 
 
-            <!-- Encabezados -->
-            <!--<div class="row table-header gx-2">
-            <div class="col-md-1 form-col">DNI</div>
-            <div class="col-md-1 form-col">Nombre</div>
-            <div class="col-md-2 form-col">Apellidos</div>
-            <div class="col-md-2 form-col">Email</div>
-            <div class="col-md-1 form-col">Rutas</div>
-            <div class="col-md-1 form-col">Tipo</div>
-            <div class="col-md-1 form-col">Inicio</div>
-            <div class="col-md-1 form-col">Final</div>
-            <div class="col-md-1 form-col">Horario</div>
-            <div class="col-md-1 form-col">Tarjeta</div>
-
-            estado required
-            dni required
-            nombre required
-            apellidos required
-            email required
-
-        </div>-->
-
             <!-- Filas dinámicas -->
             <div id="formBody">
                 <div id = "idRegistroRow_1" class="row-template mb-3">
@@ -299,23 +293,22 @@
                             </button>
                         </div>
                         <div class="card-body">
-                            
                             <div class="row align-items-end g-3">
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="dni">DNI</label>
-                                    <input name = "dni" type="text" class="form-control dni firstField " tabindex="1" size="9" required>
+                                    <input name = "dni" type="text" class="form-control dni firstField no-validation" tabindex="1" minlength="9" maxlength="10" size="9" pattern="^\d{8}([A-Za-z])?$" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="nombre">Nombre</label>
-                                    <input name = "nombre" type="text" class="form-control nombre" tabindex="2" size="20" required>
+                                    <input name = "nombre" type="text" class="form-control nombre no-validation" tabindex="2" size="20" pattern="[A-Za-z0-9 ]{3,16}" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="apellidos">Apellidos</label>
-                                    <input name = "apellidos" type="text" class="form-control apellidos" tabindex="3" size="20" required>
+                                    <input name = "apellidos" type="text" class="form-control apellidos no-validation" tabindex="3" size="20" required>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-auto">
                                     <label for="email">Email</label>
-                                    <input name = "email" type="email" class="form-control email" tabindex="4" size="20" required>
+                                    <input name = "email" type="email" class="form-control email no-validation" tabindex="4" size="20"  pattern = "[a-zA-Z0-9!#$%&'*\/=?^_`\{\|\}~\+\-]([\.]?[a-zA-Z0-9!#$%&'*\/=?^_`\{\|\}~\+\-])+@[a-zA-Z0-9]([^@&%$\/\(\)=?¿!\.,:;]|\d)+[a-zA-Z0-9][\.][a-zA-Z]{2,4}([\.][a-zA-Z]{2})?" required>
                                 </div>
                                 <div class="col-12 col-md">
                                     <label for="tipo-solicitud">Tipo</label>
@@ -341,11 +334,11 @@
                                
                                 <div class="col-12 col-md">
                                     <label for="fecha-inicio">Inicio</label>
-                                    <input name = "fecha-inicio" type="datetime-local" class="form-control fecha-inicio" tabindex="9" required>
+                                    <input name = "fecha-inicio" type="datetime-local" class="form-control fecha-inicio no-validation" tabindex="9" required>
                                 </div>
                                 <div class="col-12 col-md">
                                     <label for="fecha-final">Final</label>
-                                    <input name = "fecha-final" type="datetime-local" class="form-control fecha-final lastField" tabindex="10" required>
+                                    <input name = "fecha-final" type="datetime-local" class="form-control fecha-final lastField" tabindex="10" >
                                 </div>
                               
                             </div>
@@ -361,7 +354,6 @@
                 <div class="d-flex gap-2">
                     <button class="btn btn-success" id="generarCSV">Generar CSV</button>
                     <button class="btn btn-danger" id="limpiarFormulario">Limpiar Formulario</button>
-                    <button onclick=saludosTerrricolas() class="btn btn-danger" id="saludo">Saludo</button>
                 </div>
             </div>
         </div>
@@ -650,15 +642,6 @@
 
             // Cargar datos guardados al iniciar
             cargarDesdeLocalStorage();
-
-            // Cambiar el detector de tab a fecha-final 
-            // comentado añadido como clase lastField --> ignacio
-            // $(document).on('keydown', '.fecha-final', function(e) {
-            //     if(e.key === 'Tab' && !e.shiftKey) {
-            //         clonarFila();
-            //     }
-            // });
-            /////////////////////////////////////////////////////////
 
             // Detector de Enter para guardar
             $(document).on('keydown', 'input, select', function (e) {
