@@ -250,9 +250,9 @@
         .select2-container--default .select2-selection--multiple {
             flex-direction: column  ;
         }
-        /* .is-invalid{
+        .is-invalid{
             border-color: #dc3545;
-        } */
+        }
 
         label {
         display: block;
@@ -721,6 +721,22 @@
                 clonarFila();
             }
         });    
+
+        $(document).on('blur', 'input[required], input[pattern]', function () {
+            const input = $(this);
+
+            // Validar el campo
+            input.removeClass('no-validation');
+            if (input.is(':invalid')) {
+                // Si el campo no es válido, añadir la clase 'is-invalid'
+                input.addClass('is-invalid');
+                console.log(`El campo "${input.attr('name')}" no es válido.`);
+            } else {
+                // Si el campo es válido, eliminar la clase 'is-invalid'
+                input.removeClass('is-invalid');
+                console.log(`El campo "${input.attr('name')}" es válido.`);
+            }
+        });
     });
 
 
